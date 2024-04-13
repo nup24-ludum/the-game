@@ -3,47 +3,103 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using ArgumentOutOfRangeException = System.ArgumentOutOfRangeException;
 
-public class Player : Room {
+public class Player : Walker {
     public enum State {
+        DEAD,
         ACTIVE,
         HIDDEN,
-        DEAD,
+        RUNNING,
     }
 
+    private Dorm dorm;
+    private SpriteRenderer sprite;
+    [SerializeField] private int requestedRoom;
     [SerializeField] private Transform character;
     [SerializeField] private State state = State.ACTIVE;
 
-    private void OnGUI() {
-       Handles.Label(transform.position, "State: " + state);
+    private void Awake() {
+        sprite = GetComponent<SpriteRenderer>();
+        dorm = FindObjectOfType<Dorm>();
     }
 
-    public override bool WatcherCheck() {
-        if (state == State.ACTIVE) {
-            state = State.DEAD;
-            return true;
-        }
+    public void Die() {
+        state = State.DEAD;
+    }
 
-        return false;
+    public bool isHidden() => state == State.HIDDEN;
+
+    public override void OnDoneWalking() {
+        switch (location) {
+            case Location.CORRIDOR:
+                WalkToRoom(dorm.GetRoom(requestedRoom - 1));
+                break;
+            case Location.ROOM:
+                WalkIntoRoom();
+                break;
+            case Location.INTOROOM:
+                room.player = this;
+                state = State.ACTIVE;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     // Update is called once per frame
-    void Update() {
+    protected override void Update() {
+        base.Update();
+
+        sprite.color = Color.green;
         switch (state) {
             case State.ACTIVE:
                 if (Input.GetKey(KeyCode.Q)) {
                     state = State.HIDDEN;
                 }
-                character.localPosition = Vector3.zero;
+
+                if (Input.GetKey(KeyCode.Alpha1)) {
+                    state = State.RUNNING;
+                    room.player = null;
+                    WalkToCorridor();
+                    requestedRoom = 1;
+                }
+                if (Input.GetKey(KeyCode.Alpha2)) {
+                    state = State.RUNNING;
+                    room.player = null;
+                    WalkToCorridor();
+                    requestedRoom = 2;
+                }
+                if (Input.GetKey(KeyCode.Alpha3)) {
+                    state = State.RUNNING;
+                    room.player = null;
+                    WalkToCorridor();
+                    requestedRoom = 3;
+                }
+                if (Input.GetKey(KeyCode.Alpha4)) {
+                    state = State.RUNNING;
+                    room.player = null;
+                    WalkToCorridor();
+                    requestedRoom = 4;
+                }
+                if (Input.GetKey(KeyCode.Alpha5)) {
+                    state = State.RUNNING;
+                    room.player = null;
+                    WalkToCorridor();
+                    requestedRoom = 5;
+                }
                 break;
             case State.HIDDEN:
+                sprite.color = Color.gray;
                 if (!Input.GetKey(KeyCode.Q)) {
                     state = State.ACTIVE;
                 }
-                character.localPosition = new Vector3(-0.4f, 0, 0);
+                break;
+            case State.RUNNING:
                 break;
             case State.DEAD:
-                character.localScale = Vector3.zero;
+                sprite.color = Color.black;
+                StopWalk();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

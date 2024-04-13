@@ -5,7 +5,9 @@ using UnityEditor;
 using UnityEngine;
 
 public class Room : MonoBehaviour {
-    public virtual bool WatcherCheck() {
-        return false;
+    public Player player = null;
+
+    public bool WatcherCheck() {
+        return player && player.isHidden();
     }
 }

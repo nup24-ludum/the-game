@@ -17,6 +17,8 @@ public class Dorm : MonoBehaviour {
         }
     }
 
+    public Room GetRoom(int room) => rooms[room];
+
     public Room SelectRoom(int last) {
         int idx;
         do {

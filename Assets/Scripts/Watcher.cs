@@ -5,93 +5,69 @@ using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Watcher : MonoBehaviour {
-    public enum State {
-        GOTOCENTER,
-        GOTOROOM,
-        DONE,
-        STANDING,
-    }
-
-    private const float targetRadius = 0.1f;
+public class Watcher : Walker {
     private Dorm dorm;
-    private Room targetRoom;
-    [SerializeField] private float waitTime = 2f;
-    [SerializeField] private float countDown = 0f;
-    [SerializeField] private float peekChance = 0.4f;
-    [SerializeField] private float walkSpeed = 0.2f;
-    [SerializeField] private State state = State.GOTOCENTER;
+    [SerializeField] private bool standing = false;
+    [SerializeField] private float standTime = 2f;
+    [SerializeField] private float countdown = 0f;
+    [SerializeField] private float roomCheckProb = 0.4f;
 
     private void Awake() {
         dorm = FindObjectOfType<Dorm>();
-        transform.position = GetTargetPos();
+        transform.position = Vector3.zero;
     }
 
-    private Vector3 GetTargetPos() {
-        return state switch {
-            State.GOTOCENTER => Vector3.zero,
-            State.GOTOROOM or State.DONE => targetRoom.transform.position,
-            State.STANDING => Vector3.zero,
-            _ => throw new ArgumentOutOfRangeException()
-        };
+    private void Start() {
+        WalkToRoom(dorm.SelectRoom());
     }
 
-    // Update is called once per frame
-    private void Update() {
-        if (state == State.DONE) {
+    public override void OnSight(Walker other) {
+        if (other.gameObject.TryGetComponent(out Player pl) && !pl.isHidden()) {
+            pl.Die();
+            Debug.Log("Got you");
+        }
+    }
+
+    public override void OnWalkReject() { }
+
+    public override void OnDoneWalking() {
+        switch (location) {
+            case Location.CORRIDOR:
+                WalkToRoom(dorm.SelectRoom());
+                break;
+            case Location.ROOM:
+                if (Random.Range(0f, 1f) <= roomCheckProb) {
+                    WalkIntoRoom();
+                } else {
+                    standing = true;
+                    countdown = standTime;
+                }
+                break;
+            case Location.INTOROOM:
+                if (room.WatcherCheck()) {
+                    room.player.Die();
+                    Debug.Log("Got you");
+                }
+                WalkToCorridor();
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    protected override void Update() {
+        base.Update();
+
+        standing = standing && location == Location.ROOM;
+
+        if (countdown <= 0f && standing) {
+            standing = false;
+            WalkToRoom(dorm.SelectRoom());
             return;
         }
 
-        Vector3 targetPos = GetTargetPos();
-        targetPos.z = -1f;
-        switch (state) {
-            case State.GOTOCENTER:
-                if (MathF.Abs(targetPos.y - transform.position.y) > targetRadius) {
-                    Vector3 tagetDir = Vector3.Project(
-                            targetPos - transform.position,
-                            Vector3.up
-                            ).normalized;
-                    transform.position += tagetDir * (walkSpeed * Time.deltaTime);
-                } else {
-                    transform.position = new Vector3(transform.position.x, 0, -1);
-                    targetRoom = dorm.SelectRoom();
-                    state = State.GOTOROOM;
-                }
-                break;
-            case State.GOTOROOM:
-                if (MathF.Abs(targetPos.x - transform.position.x) > targetRadius) {
-                    Vector3 tagetDir = Vector3.Project(
-                            targetPos - transform.position,
-                            Vector3.right
-                            ).normalized;
-                    transform.position += tagetDir * (walkSpeed * Time.deltaTime);
-                    if (MathF.Abs(targetPos.x - transform.position.x) <= targetRadius &&
-                        Random.Range(0, 1f) <= peekChance) {
-                        transform.position = new Vector3(targetRoom.transform.position.x, 0, -1);
-                        state = State.STANDING;
-                        countDown = waitTime;
-                    }
-                } else if (MathF.Abs(targetPos.y - transform.position.y) > targetRadius) {
-                    Vector3 tagetDir = Vector3.Project(
-                            targetPos - transform.position,
-                            Vector3.up
-                            ).normalized;
-                    transform.position += tagetDir * (walkSpeed * Time.deltaTime);
-                } else {
-                    transform.position = targetRoom.transform.position + new Vector3(0, 0, -1);
-                    state = targetRoom.WatcherCheck() ? State.DONE : State.GOTOCENTER;
-                }
-                break;
-            case State.STANDING:
-                countDown -= Time.deltaTime;
-                if (countDown <= 0f) {
-                    targetRoom = dorm.SelectRoom();
-                    state = State.GOTOROOM;
-                }
-                break;
-            case State.DONE:
-            default:
-                throw new ArgumentOutOfRangeException();
+        if (standing) {
+            countdown -= Time.deltaTime;
         }
     }
 }
