@@ -43,10 +43,10 @@ resharper_redundant_assignment_highlighting = suggestion
 resharper_for_can_be_converted_to_foreach_highlighting = none
 
 # Symbols
-dotnet_naming_symbols.public_fields.applicable_kinds = property,field,event,delegate
-dotnet_naming_symbols.public_fields.applicable_accessibilities = public,internal,protected,protected_internal
+dotnet_naming_symbols.public_fields.applicable_kinds = property, field, event, delegate
+dotnet_naming_symbols.public_fields.applicable_accessibilities = public, internal, protected, protected_internal
 dotnet_naming_symbols.methods.applicable_kinds = method
-dotnet_naming_symbols.methods.applicable_accessibilities = public,internal,protected,protected_internal,private
+dotnet_naming_symbols.methods.applicable_accessibilities = public, internal, protected, protected_internal, private
 dotnet_naming_symbols.private_fields.applicable_kinds = field
 dotnet_naming_symbols.private_fields.applicable_accessibilities = private
 
