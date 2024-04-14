@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 
 public class Room : MonoBehaviour {
+    public RectInt zone;
     public Player player = null;
 
     public bool WatcherCheck() {
