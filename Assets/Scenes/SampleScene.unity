@@ -168,6 +168,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d73df09527b344458e22bab9553cba94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zone:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   player: {fileID: 0}
 --- !u!212 &213923289
 SpriteRenderer:
@@ -485,6 +490,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d73df09527b344458e22bab9553cba94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zone:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   player: {fileID: 0}
 --- !u!212 &763985622
 SpriteRenderer:
@@ -682,6 +692,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d73df09527b344458e22bab9553cba94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zone:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   player: {fileID: 0}
 --- !u!1 &956745687
 GameObject:
@@ -804,6 +819,7 @@ GameObject:
   - component: {fileID: 1435543571}
   - component: {fileID: 1435543572}
   - component: {fileID: 1435543573}
+  - component: {fileID: 1435543574}
   m_Layer: 0
   m_Name: Char
   m_TagString: Untagged
@@ -890,18 +906,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bac1b6e5b5b98647900182ed0073792, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sightLength: 0
-  walkSpeed: 6
-  direction: {x: 0, y: 0, z: 0}
-  walkTarget:
-    pending: 0
-    location: 0
-    room: {fileID: 0}
-  room: {fileID: 1661110828}
-  location: 2
+  mapPos: {x: 0, y: 0}
   requestedRoom: 0
   character: {fileID: 0}
   state: 1
+--- !u!114 &1435543574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1435543570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd73df61d46226047b3a14a2faa136b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  doCrafting: 0
+  crafting:
+  - items: 0100000000000000
+    outcome: 0
+  items: 
 --- !u!1 &1449091633
 GameObject:
   m_ObjectHideFlags: 0
@@ -1049,6 +1074,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d73df09527b344458e22bab9553cba94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zone:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   player: {fileID: 0}
 --- !u!1 &2068575057
 GameObject:
@@ -1147,6 +1177,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d73df09527b344458e22bab9553cba94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zone:
+    x: 0
+    y: 0
+    width: 0
+    height: 0
   player: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
